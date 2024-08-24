@@ -35,9 +35,10 @@ class APIClient {
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
         
-        if let token = keychainService.retrieveToken() {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
+        /// Note: You can add the personal access token in `Keys.plist` and then uncomment this code!
+        /// if let token = keychainService.retrieveToken(), !token.isEmpty {
+        ///    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        /// }
         
         let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
