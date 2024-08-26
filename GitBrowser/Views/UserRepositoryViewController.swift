@@ -13,6 +13,8 @@ class UserRepositoryViewController: UIViewController {
     
     var viewModel: UserRepositoryViewModelProtocol!
     private let loadingView = LoadingView()
+    private var isAPICallActive: Bool = false
+    private let refreshCooldown: TimeInterval = 5.0
     
     @IBOutlet private var avatarImageView: UIImageView!
     @IBOutlet private var fullNameLabel: UILabel!
@@ -25,49 +27,67 @@ class UserRepositoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUIAndViewModel()
-        
-        loadingView.show()
-        viewModel.fetchUserDetails()
-        viewModel.fetchRepositories()
+        fetchUserAndRepository()
     }
     
     // MARK: - Configure Subviews and View Models
     private func configureUIAndViewModel() {
-        let backItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-        self.navigationItem.backBarButtonItem = backItem
+        navigationItem.hidesBackButton = true
+        
+        let backItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"), style: .plain, target: self, action: #selector(onBackBarButtonTapped))
+        navigationItem.leftBarButtonItem = backItem
+        
+        let rightItem = UIBarButtonItem(image: UIImage(systemName: "arrow.clockwise"), style: .plain, target: self, action: #selector(onReloadTapped))
+        navigationItem.rightBarButtonItem = rightItem
 
         setupTableView()
         bindViewModel()
     }
     
-    private func bindViewModel() {
-        viewModel.refreshUI = { [weak self] in
-            DispatchQueue.main.async {
-                self?.updateUserDetails()
-            }
-        }
+    private func fetchUserAndRepository() {
+        if isAPICallActive { return }
         
-        viewModel.reloadTableData = { [weak self] in
-            DispatchQueue.main.async {
-                self?.loadingView.hide()
-                self?.tableView.reloadData()
-            }
-        }
-        
-        viewModel.onError = { [weak self]  error in
-            DispatchQueue.main.async {
-                self?.loadingView.hide()
-                let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self?.present(alert, animated: true, completion: nil)
-            }
-        }
+        // Set the flag to prevent repeated calls with in specified time
+        isAPICallActive = true
+        loadingView.show()
+        viewModel.fetchUserDetails()
     }
     
     private func setupTableView() {
         tableView.register(RepositoryTableViewCell.self, forCellReuseIdentifier: RepositoryTableViewCell.identifier)
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    private func bindViewModel() {
+        viewModel.refreshUI = { [weak self] in
+            DispatchQueue.main.async {
+                self?.updateUserDetails()
+                self?.viewModel.fetchRepositories()
+            }
+        }
+        
+        viewModel.reloadTableData = { [weak self] in
+            DispatchQueue.main.async {
+                self?.onfetchAPICompletion()
+                self?.tableView.reloadData()
+            }
+        }
+        
+        viewModel.onError = { [weak self]  error in
+            DispatchQueue.main.async {
+                self?.onfetchAPICompletion()
+                self?.showError(error: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func onfetchAPICompletion() {
+        self.loadingView.hide()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + refreshCooldown) {
+            self.isAPICallActive = false
+        }
     }
     
     private func updateUserDetails() {
@@ -79,11 +99,25 @@ class UserRepositoryViewController: UIViewController {
             avatarImageView.kf.setImage(with: url)
         }
     }
+    
+    private func showError(error: String) {
+        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Action handlers
+    @objc private func onBackBarButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func onReloadTapped() {
+        fetchUserAndRepository()
+    }
 }
 
 // MARK: - UITableViewDataSource & UITableViewDelegate
 extension UserRepositoryViewController: UITableViewDataSource, UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Repositories"
     }

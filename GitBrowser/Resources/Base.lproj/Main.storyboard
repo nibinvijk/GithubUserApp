@@ -13,7 +13,7 @@
             <objects>
                 <tableViewController id="SVk-q0-yet" customClass="UserListViewController" customModule="GitBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="1" estimatedSectionFooterHeight="-1" id="Ao1-MM-u2z">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <sections/>
@@ -180,11 +180,12 @@
                         <outlet property="fullNameLabel" destination="Wzv-lE-XkR" id="T0k-il-B4o"/>
                         <outlet property="tableView" destination="QXU-6s-d0z" id="pYI-Td-WOY"/>
                         <outlet property="usernameLabel" destination="uhG-NE-01d" id="Cue-pe-2Fc"/>
+                        <segue destination="SVk-q0-yet" kind="show" identifier="RepositoryView" id="Xex-pl-dZL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bBM-YP-qB4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75.572519083969468" y="-83.098591549295776"/>
+            <point key="canvasLocation" x="149" y="-92"/>
         </scene>
         <!--GitBrowse-->
         <scene sceneID="VC1-w5-ZLx">
@@ -203,6 +204,9 @@
             <point key="canvasLocation" x="-1555" y="-91"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Xex-pl-dZL"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>

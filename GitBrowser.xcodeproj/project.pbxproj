@@ -19,8 +19,6 @@
 		F6A69D322C777F45000C69F3 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = F6A69D312C777F45000C69F3 /* Base */; };
 		F6A69D342C777F48000C69F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6A69D332C777F48000C69F3 /* Assets.xcassets */; };
 		F6A69D372C777F48000C69F3 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = F6A69D362C777F48000C69F3 /* Base */; };
-		F6A69D4C2C777F49000C69F3 /* GitBrowserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D4B2C777F49000C69F3 /* GitBrowserUITests.swift */; };
-		F6A69D4E2C777F49000C69F3 /* GitBrowserUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D4D2C777F49000C69F3 /* GitBrowserUITestsLaunchTests.swift */; };
 		F6A69D5F2C77802B000C69F3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D5E2C77802B000C69F3 /* User.swift */; };
 		F6A69D612C778048000C69F3 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D602C778048000C69F3 /* Repository.swift */; };
 		F6A69D642C778076000C69F3 /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D632C778076000C69F3 /* UserListViewModel.swift */; };
@@ -42,6 +40,8 @@
 		F6A69D9D2C77BFA4000C69F3 /* RepositoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D9C2C77BFA4000C69F3 /* RepositoryTableViewCell.swift */; };
 		F6DBDA792C7B91BA00705C75 /* MockKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6DBDA782C7B91BA00705C75 /* MockKeys.plist */; };
 		F6DBDA7B2C7B920600705C75 /* FileManagerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DBDA7A2C7B920600705C75 /* FileManagerServiceTests.swift */; };
+		F6DBDA7D2C7C75A600705C75 /* UserListViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DBDA7C2C7C75A600705C75 /* UserListViewControllerTests.swift */; };
+		F6DBDA7F2C7C77C800705C75 /* UserRepositoryViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DBDA7E2C7C77C800705C75 /* UserRepositoryViewControllerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,8 +78,6 @@
 		F6A69D382C777F48000C69F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6A69D3D2C777F49000C69F3 /* GitBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6A69D472C777F49000C69F3 /* GitBrowserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitBrowserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F6A69D4B2C777F49000C69F3 /* GitBrowserUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitBrowserUITests.swift; sourceTree = "<group>"; };
-		F6A69D4D2C777F49000C69F3 /* GitBrowserUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitBrowserUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F6A69D5E2C77802B000C69F3 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		F6A69D602C778048000C69F3 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		F6A69D632C778076000C69F3 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
@@ -101,6 +99,8 @@
 		F6A69D9C2C77BFA4000C69F3 /* RepositoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTableViewCell.swift; sourceTree = "<group>"; };
 		F6DBDA782C7B91BA00705C75 /* MockKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MockKeys.plist; sourceTree = "<group>"; };
 		F6DBDA7A2C7B920600705C75 /* FileManagerServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerServiceTests.swift; sourceTree = "<group>"; };
+		F6DBDA7C2C7C75A600705C75 /* UserListViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewControllerTests.swift; sourceTree = "<group>"; };
+		F6DBDA7E2C7C77C800705C75 /* UserRepositoryViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepositoryViewControllerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,8 +176,8 @@
 		F6A69D4A2C777F49000C69F3 /* GitBrowserUITests */ = {
 			isa = PBXGroup;
 			children = (
-				F6A69D4B2C777F49000C69F3 /* GitBrowserUITests.swift */,
-				F6A69D4D2C777F49000C69F3 /* GitBrowserUITestsLaunchTests.swift */,
+				F6DBDA7C2C7C75A600705C75 /* UserListViewControllerTests.swift */,
+				F6DBDA7E2C7C77C800705C75 /* UserRepositoryViewControllerTests.swift */,
 			);
 			path = GitBrowserUITests;
 			sourceTree = "<group>";
@@ -498,8 +498,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6A69D4E2C777F49000C69F3 /* GitBrowserUITestsLaunchTests.swift in Sources */,
-				F6A69D4C2C777F49000C69F3 /* GitBrowserUITests.swift in Sources */,
+				F6DBDA7F2C7C77C800705C75 /* UserRepositoryViewControllerTests.swift in Sources */,
+				F6DBDA7D2C7C75A600705C75 /* UserListViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

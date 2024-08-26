@@ -11,9 +11,14 @@ class UserListViewController: UITableViewController {
     
     private var shownIndexes : [IndexPath] = []
     private let CELL_HEIGHT : CGFloat = 70
+    private var isAPICallActive: Bool = false
+    private let refreshCooldown: TimeInterval = 5.0
     
     private var viewModel: UserListViewModelProtocol!
     private let loadingView = LoadingView()
+    
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var filteredUsers: [User] = []
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -23,20 +28,66 @@ class UserListViewController: UITableViewController {
         tableView.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
         tableView.rowHeight = CELL_HEIGHT
         
-        setupRefreshControl()
-        setupViewModel()
-        loadingView.show()
-        viewModel.fetchUsers()
+        configureSubviewsAndViewModel()
+        fetchUserList()
     }
     
     // MARK: - Configure subviews and viewmodel
+    private func configureSubviewsAndViewModel() {
+        setupRefreshControl()
+        setupSearchController()
+        
+        setupViewModel()
+    }
+    
     private func setupRefreshControl() {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
     }
     
-    @objc private func refreshData(_ sender: UIRefreshControl) {
-        self.refreshControl?.beginRefreshing()
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Users"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+    }
+    
+    private func setupViewModel() {
+        let userService = UserService(apiClient: APIClient())
+        viewModel = UserListViewModel(userService: userService)
+        
+        viewModel.reloadData = { [weak self] in
+            DispatchQueue.main.async {
+                self?.filteredUsers = self?.viewModel.users ?? []
+                self?.updateUIonAPICompletion()
+            }
+        }
+        
+        viewModel.onError = { [weak self] error in
+            DispatchQueue.main.async {
+                self?.updateUIonAPICompletion(reloadTable: false)
+                self?.showAlert(error: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func updateUIonAPICompletion(reloadTable: Bool = true) {
+        self.loadingView.hide()
+        self.onRefreshDataCompleted()
+        
+        if reloadTable {
+            self.tableView.reloadData()
+        }
+    }
+    
+    private func fetchUserList() {
+        if isAPICallActive { return }
+       
+        if !(refreshControl?.isRefreshing ?? false) {
+            loadingView.show()
+        }
+        isAPICallActive = true
         viewModel.fetchUsers()
     }
     
@@ -54,31 +105,9 @@ class UserListViewController: UITableViewController {
         refreshControl?.attributedTitle = attributedTitle
     }
     
-    private func onRefreshDataCompleted() {
-        DispatchQueue.main.async {
-            self.refreshControl?.endRefreshing()
-            self.updateRefreshControlTitle()
-        }
-    }
-    
-    private func setupViewModel() {
-        let userService = UserService(apiClient: APIClient())
-        viewModel = UserListViewModel(userService: userService)
-        
-        viewModel.reloadData = { [weak self] in
-            DispatchQueue.main.async {
-                self?.loadingView.hide()
-                self?.onRefreshDataCompleted()
-                self?.tableView.reloadData()
-            }
-        }
-        
-        viewModel.onError = { [weak self] error in
-            DispatchQueue.main.async {
-                self?.loadingView.hide()
-                self?.showAlert(error: error.localizedDescription)
-            }
-        }
+    private func clearSearchBarAndResignFirstResponder() {
+        searchController.searchBar.text = nil
+        searchController.searchBar.endEditing(true)
     }
     
     private func showAlert(error: String) {
@@ -88,12 +117,34 @@ class UserListViewController: UITableViewController {
             self.onRefreshDataCompleted()
         }
     }
+    
+    // MARK: - Action handlers
+    @objc private func refreshData(_ sender: UIRefreshControl) {
+        if (isAPICallActive) {
+            refreshControl?.endRefreshing()
+            return
+        }
+        
+        refreshControl?.beginRefreshing()
+        fetchUserList()
+    }
+    
+    private func onRefreshDataCompleted() {
+        DispatchQueue.main.async {
+            self.refreshControl?.endRefreshing()
+            self.updateRefreshControlTitle()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + refreshCooldown) {
+            self.isAPICallActive = false
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource & UITableViewDelegate
 extension UserListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.users.count
+        return filteredUsers.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -101,11 +152,11 @@ extension UserListViewController {
             return UITableViewCell()
         }
         
-        guard viewModel.users.count > indexPath.row else {
+        guard filteredUsers.count > indexPath.row else {
             return cell
         }
         
-        let user = viewModel.users[indexPath.row]
+        let user = filteredUsers[indexPath.row]
         cell.configure(with: user)
         
         return cell
@@ -114,7 +165,7 @@ extension UserListViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedUser = viewModel.users[indexPath.row]
+        let selectedUser = filteredUsers[indexPath.row]
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let userRepositoryViewController = storyboard.instantiateViewController(withIdentifier: "RepositoryVC") as? UserRepositoryViewController {
@@ -124,6 +175,8 @@ extension UserListViewController {
             
             navigationController?.pushViewController(userRepositoryViewController, animated: true)
         }
+        
+        clearSearchBarAndResignFirstResponder()
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -151,3 +204,16 @@ extension UserListViewController {
     }
 }
 
+// MARK: - UISearchController Delegate
+extension UserListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text, !searchText.isEmpty else {
+            filteredUsers = viewModel.users
+            tableView.reloadData()
+            return
+        }
+        
+        filteredUsers = viewModel.users.filter { $0.login.lowercased().contains(searchText.lowercased()) }
+        tableView.reloadData()
+    }
+}
