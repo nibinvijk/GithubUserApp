@@ -15,6 +15,7 @@ enum APIError: Error {
     case rateLimitExceeded
 }
 
+/// Note: Alternatively, we can use Alamofire or other networking libraries which supports chainable requests and various utilities. I chose to write this specific class just to show case a vague handling of network requests. At present, it only handles specific error cases.
 class APIClient {
     private let baseUrl = "https://api.github.com"
     private let session: URLSessionProtocol
@@ -36,9 +37,9 @@ class APIClient {
         request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
         
         /// Note: You can add the personal access token in `Keys.plist` and then uncomment this code!
-        /// if let token = keychainService.retrieveToken(), !token.isEmpty {
-        ///    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        /// }
+        ///        if let token = keychainService.retrieveToken(), !token.isEmpty {
+        ///            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        ///        }
         
         let task = session.dataTask(with: request) { data, response, error in
             if let error = error {

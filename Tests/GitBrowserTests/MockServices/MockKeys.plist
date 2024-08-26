@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>AccessToken</key>
-	<string>AccessToken</string>
+	<string>MockedAccessToken</string>
 </dict>
 </plist>

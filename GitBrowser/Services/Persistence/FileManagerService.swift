@@ -9,18 +9,18 @@ import Foundation
 
 class FileManagerService {
     
-    private let plistFileName = "Keys"
+    private static let plistFileName = "Keys"
     
-    func getTokenFromPlist() -> String? {
-        guard let token = readTokenFromPlist() else {
+    func getTokenFromPlist(fileName: String = plistFileName) -> String? {
+        guard let token = readTokenFromPlist(fileName: fileName) else {
             return nil
         }
         
         return token
     }
     
-    private func readTokenFromPlist() -> String? {
-        guard let plistPath = Bundle.main.path(forResource: plistFileName, ofType: "plist"),
+    private func readTokenFromPlist(fileName: String) -> String? {
+        guard let plistPath = Bundle.main.path(forResource: fileName, ofType: "plist"),
               let plistData = FileManager.default.contents(atPath: plistPath),
               let plistDict = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: AnyObject],
               let token = plistDict["AccessToken"] as? String else {

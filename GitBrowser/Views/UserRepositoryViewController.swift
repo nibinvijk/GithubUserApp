@@ -31,7 +31,7 @@ class UserRepositoryViewController: UIViewController {
         viewModel.fetchRepositories()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Configure Subviews and View Models
     private func configureUIAndViewModel() {
         let backItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         self.navigationItem.backBarButtonItem = backItem

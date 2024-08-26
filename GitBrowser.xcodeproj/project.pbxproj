@@ -40,6 +40,8 @@
 		F6A69D982C77ACF7000C69F3 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6A69D972C77ACF7000C69F3 /* Keys.plist */; };
 		F6A69D9B2C77B506000C69F3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F6A69D9A2C77B506000C69F3 /* Kingfisher */; };
 		F6A69D9D2C77BFA4000C69F3 /* RepositoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A69D9C2C77BFA4000C69F3 /* RepositoryTableViewCell.swift */; };
+		F6DBDA792C7B91BA00705C75 /* MockKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6DBDA782C7B91BA00705C75 /* MockKeys.plist */; };
+		F6DBDA7B2C7B920600705C75 /* FileManagerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6DBDA7A2C7B920600705C75 /* FileManagerServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +99,8 @@
 		F6A69D962C778443000C69F3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F6A69D972C77ACF7000C69F3 /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		F6A69D9C2C77BFA4000C69F3 /* RepositoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTableViewCell.swift; sourceTree = "<group>"; };
+		F6DBDA782C7B91BA00705C75 /* MockKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MockKeys.plist; sourceTree = "<group>"; };
+		F6DBDA7A2C7B920600705C75 /* FileManagerServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +302,7 @@
 			children = (
 				F613A4BE2C7A787D002A39E1 /* KeychainServiceTests.swift */,
 				F613A4C22C7A85BA002A39E1 /* APIClientTests.swift */,
+				F6DBDA7A2C7B920600705C75 /* FileManagerServiceTests.swift */,
 			);
 			path = ServiceTests;
 			sourceTree = "<group>";
@@ -308,6 +313,7 @@
 				F6A69D922C7783F7000C69F3 /* MockUserService.swift */,
 				F613A4C42C7A863A002A39E1 /* MockURLSession.swift */,
 				F613A4C62C7A87C0002A39E1 /* MockAPIClient.swift */,
+				F6DBDA782C7B91BA00705C75 /* MockKeys.plist */,
 			);
 			path = MockServices;
 			sourceTree = "<group>";
@@ -433,6 +439,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6DBDA792C7B91BA00705C75 /* MockKeys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +490,7 @@
 				F613A4C82C7A8888002A39E1 /* MockURLSession.swift in Sources */,
 				F613A4BF2C7A787D002A39E1 /* KeychainServiceTests.swift in Sources */,
 				F6A69D932C7783F7000C69F3 /* MockUserService.swift in Sources */,
+				F6DBDA7B2C7B920600705C75 /* FileManagerServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

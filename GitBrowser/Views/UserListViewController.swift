@@ -15,6 +15,7 @@ class UserListViewController: UITableViewController {
     private var viewModel: UserListViewModelProtocol!
     private let loadingView = LoadingView()
     
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,9 +23,42 @@ class UserListViewController: UITableViewController {
         tableView.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
         tableView.rowHeight = CELL_HEIGHT
         
+        setupRefreshControl()
         setupViewModel()
         loadingView.show()
         viewModel.fetchUsers()
+    }
+    
+    // MARK: - Configure subviews and viewmodel
+    private func setupRefreshControl() {
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
+    }
+    
+    @objc private func refreshData(_ sender: UIRefreshControl) {
+        self.refreshControl?.beginRefreshing()
+        viewModel.fetchUsers()
+    }
+    
+    private func updateRefreshControlTitle() {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        
+        let title = "Last refreshed: \(formatter.string(from: Date()))"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 12),
+            .foregroundColor: UIColor.gray
+        ]
+        let attributedTitle = NSAttributedString(string: title, attributes: attributes)
+        refreshControl?.attributedTitle = attributedTitle
+    }
+    
+    private func onRefreshDataCompleted() {
+        DispatchQueue.main.async {
+            self.refreshControl?.endRefreshing()
+            self.updateRefreshControlTitle()
+        }
     }
     
     private func setupViewModel() {
@@ -34,6 +68,7 @@ class UserListViewController: UITableViewController {
         viewModel.reloadData = { [weak self] in
             DispatchQueue.main.async {
                 self?.loadingView.hide()
+                self?.onRefreshDataCompleted()
                 self?.tableView.reloadData()
             }
         }
@@ -41,14 +76,21 @@ class UserListViewController: UITableViewController {
         viewModel.onError = { [weak self] error in
             DispatchQueue.main.async {
                 self?.loadingView.hide()
-                let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self?.present(alert, animated: true, completion: nil)
+                self?.showAlert(error: error.localizedDescription)
             }
+        }
+    }
+    
+    private func showAlert(error: String) {
+        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true) {
+            self.onRefreshDataCompleted()
         }
     }
 }
 
+// MARK: - UITableViewDataSource & UITableViewDelegate
 extension UserListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.users.count
